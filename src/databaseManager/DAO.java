@@ -1,5 +1,6 @@
 package databaseManager;
 
+import java.sql.CallableStatement;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -46,8 +47,30 @@ public class DAO {
             } catch (SQLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            }
-            
-        }
+            } 
+        } 
     }
+    
+    /**
+     * User: Thanh Dao
+     * Content:get the maker who has sale the most cars
+     * Date: Oct 12, 2018
+     * 
+     */
+    public void getBestSaler() {
+        DBConnector db = new DBConnector();
+        db.getConnection();
+        String query = "{call dbo.TheMostSalingThisYear(?)}";
+        if(db.conn != null) {
+            CallableStatement cst = null;
+            try {               
+                cst = db.conn.prepareCall(query);
+                cst.registerOutParameter(1 , java.sql.Types.NVARCHAR);
+                
+            } catch (SQLException e) {
+                // TODO: handle exception
+                e.printStackTrace();
+            }
+        }
+    }  
 }

@@ -8,6 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
+import java.util.ArrayList;
+
+import dto.Car;
 
 /**
  * Version:
@@ -50,12 +53,14 @@ public class DAO {
    * User: Thanh Dao Content: close current connection Date: Oct 12, 2018
    * 
    */
-  public void closeConnection() {
+  public int closeConnection() {
     try {
       conn.close();
+      return 1;
     } catch (SQLException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
+      return 0;
     }
   }
 
@@ -64,7 +69,7 @@ public class DAO {
    * Content:Get all data from CAR table except the IDs Date: Oct
    * 12, 2018
    */
-public void getCarData() {
+public int getCarData(ArrayList<Car> lstCar) {
   this.getConnection();
   if (this.conn != null) {
     Statement st = null;
@@ -78,15 +83,19 @@ public void getCarData() {
         Date date = rs.getDate(3);
         String sColor = rs.getString(4);
         String sNote = rs.getString(5);
+        Car car = new Car(sMaker, sModel, date.toString(), sColor, sNote);
+        lstCar.add(car);
       }
       st.close();
       this.closeConnection();
-
+      return 1;
     } catch (SQLException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
+      return 0;
     }
   }
+  return 0;
 }
 
   /**

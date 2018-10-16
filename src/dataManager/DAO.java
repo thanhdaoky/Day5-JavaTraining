@@ -11,6 +11,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import dto.Car;
+import dto.Customer;
 
 /**
  * Version:
@@ -103,7 +104,8 @@ public int getCarData(ArrayList<Car> lstCar) {
    * Content:get the maker who has sale the most cars Date: Oct
    * 12, 2018 
    */
-public void getBestSaler() {
+public String getBestSaler() {
+  String name;
   this.getConnection();
   String query = "{?=call dbo.TheMostSalingThisYear()}";
   if (this.conn != null) {
@@ -112,8 +114,10 @@ public void getBestSaler() {
       cst = this.conn.prepareCall(query);
       cst.registerOutParameter(1, java.sql.Types.NVARCHAR);
       cst.executeUpdate();
+      name = cst.getNString(1);
       cst.close();
       this.closeConnection();
+      return name;
     } catch (SQLFeatureNotSupportedException e1) {
       e1.printStackTrace();
     } catch (SQLException e) {
@@ -121,6 +125,7 @@ public void getBestSaler() {
       e.printStackTrace();
     }
   }
+  return null;
 }
 
   /**
@@ -128,7 +133,7 @@ public void getBestSaler() {
      * Date: 
      * Content: 
      */
-public void removeCanceledOrderLastYear() {
+public String removeCanceledOrderLastYear() {
   this.getConnection();
   String query = "{call removeCanceledOrderLastYear(?)}";
   if (this.conn != null) {
@@ -140,15 +145,18 @@ public void removeCanceledOrderLastYear() {
       String msg = cst.getString(1);
       cst.close();
       this.closeConnection();
+      return msg;
       // System.out.println();
     } catch (SQLException e) {
       // TODO: handle exception
       e.printStackTrace();
     }
   }
+  return null;
 }
 
-public void findCustomersHaveOrdered(int id) {
+public ArrayList<Customer> findCustomersHaveOrdered(int id) {
+  ArrayList<Customer> lst =new ArrayList<Customer>();
   this.getConnection();
   String query = "{call findCustomersHaveOrdered(?,?,?,?,?)}";
   if (conn != null) {
@@ -163,19 +171,23 @@ public void findCustomersHaveOrdered(int id) {
       ResultSet rs = cst.executeQuery();
 
       while (rs.next()) {
+        
         String msg2 = rs.getNString(1);
         int msg3 = rs.getInt(2);
         int msg4 = rs.getInt(3);
         String msg5 = rs.getNString(4);
+        Customer cs = new Customer(msg2, msg3, msg4, msg5);
+        lst.add(cs);
       }
-
       cst.close();
       closeConnection();
+      return lst;
       // System.out.println();
     } catch (SQLException e) {
       // TODO: handle exception
       e.printStackTrace();
     }
   }
+  return null;
 }
 }

@@ -1,7 +1,6 @@
 package assignment;
 
-import databaseManager.DAO;
-import databaseManager.DBConnector;
+import dataManager.DAO;
 
 public class Main {
     public static void main(String[] args) {
